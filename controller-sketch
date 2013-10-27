@@ -1,0 +1,66 @@
+#include "UnoJoy.h"
+
+// Define our pins
+int TrianglePin = 4;
+int SquarePin = 5;
+int CrossPin = 3;
+int CirclePin = 2;
+
+int L1Pin = 8;
+int L2Pin = 9;
+int R1Pin = 10;
+int R2Pin = 11;
+
+int StartPin = 12;
+int R3Pin = 6;
+int L3Pin =  7;
+
+
+void setup(){
+  setupPins();
+  setupUnoJoy();
+}
+
+void loop(){
+  // Always be getting fresh data
+  dataForController_t controllerData = getControllerData();
+  setControllerData(controllerData);
+}
+
+void setupPins(void){
+  // Set all the digital pins as inputs
+  // with the pull-up enabled, except for the 
+  // two serial line pins
+  for (int i = 2; i <= 12; i++){
+    pinMode(i, INPUT);
+    digitalWrite(i, HIGH);
+  }
+}
+
+dataForController_t getControllerData(void){
+  
+  // Set up a place for our controller data
+  //  Use the getBlankDataForController() function, since
+  //  just declaring a fresh dataForController_t tends
+  //  to get you one filled with junk from other, random
+  //  values that were in those memory locations before
+  dataForController_t controllerData = getBlankDataForController();
+  // Since our buttons are all held high and
+  //  pulled low when pressed, we use the "!"
+  //  operator to invert the readings from the pins
+  controllerData.triangleOn = !digitalRead(TrianglePin);
+  controllerData.circleOn = !digitalRead(CirclePin);
+  controllerData.squareOn = !digitalRead(SquarePin);
+  controllerData.crossOn = !digitalRead(CrossPin);
+  controllerData.l1On = !digitalRead(L1Pin);
+  controllerData.l2On = !digitalRead(L2Pin);
+  controllerData.r1On = !digitalRead(R1Pin);
+  controllerData.r2On = !digitalRead(R2Pin);
+  
+  controllerData.startOn = !digitalRead(StartPin);
+  controllerData.r3On = !digitalRead(R3Pin);
+  controllerData.l3On = !digitalRead(L3Pin);   
+  
+  // And return the data!
+  return controllerData;
+}
